@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <iostream>
 
 namespace VE
 {
@@ -6,16 +7,26 @@ namespace VE
 				   U32 width = 1280, U32 height = 720)
 		: m_Title(title), m_Width(width), m_Height(height) 
 	{
-		Init();
+		m_IsRunning = Init();
 	}
 	
-	void Window::Init()
+	B32 Window::Init()
 	{
-		glfwInit();
+		if (glfwInit() == GLFW_FALSE) return false;
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), 0, 0);
+
+		return (B32)m_Window;
+	}
+
+	void Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+	{
+		if (glfwCreateWindowSurface(instance, m_Window, nullptr, surface) != VK_SUCCESS)
+		{
+			std::cout << "Failed to create a window surface!" << std::endl;
+		}
 	}
 
 	Window::~Window()
