@@ -163,8 +163,8 @@ void SwapChain::createSwapChain() {
   createInfo.clipped = VK_TRUE;
 
   createInfo.oldSwapchain = VK_NULL_HANDLE;
-
-  if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+  auto result = vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain);
+  if (result!= VK_SUCCESS) {
     throw std::runtime_error("failed to create swap chain!");
   }
 
@@ -362,7 +362,7 @@ void SwapChain::createSyncObjects() {
 VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR> &availableFormats) {
   for (const auto &availableFormat : availableFormats) {
-    if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
+    if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
         availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
       return availableFormat;
     }

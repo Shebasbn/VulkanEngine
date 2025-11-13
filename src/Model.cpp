@@ -58,11 +58,16 @@ namespace VE
 
 	std::vector<VkVertexInputAttributeDescription> Model::Vertex::GetAttributeDescriptions()
 	{
-		std::vector<VkVertexInputAttributeDescription> attributeDescs(1);
+		std::vector<VkVertexInputAttributeDescription> attributeDescs(2);
 		attributeDescs[0].binding = 0;
 		attributeDescs[0].location = 0;
 		attributeDescs[0].format = VK_FORMAT_R32G32_SFLOAT;
-		attributeDescs[0].offset = 0;
+		attributeDescs[0].offset = offsetof(Vertex, position);
+
+		attributeDescs[1].binding = 0;
+		attributeDescs[1].location = 1;
+		attributeDescs[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescs[1].offset = offsetof(Vertex, color);
 		return attributeDescs;
 	}
 }
