@@ -1,6 +1,7 @@
 D:\dev\VulkanEngine\src\FirstApp.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\FirstApp.obj
 D:\dev\VulkanEngine\src\main.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\main.obj
 D:\dev\VulkanEngine\src\Device.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\Device.obj
+D:\dev\VulkanEngine\src\Model.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\Model.obj
 D:\dev\VulkanEngine\src\Pipeline.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\Pipeline.obj
 D:\dev\VulkanEngine\src\SwapChain.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\SwapChain.obj
 D:\dev\VulkanEngine\src\Window.cpp;D:\dev\VulkanEngine\VulkanEngine\VulkanEngine\x64\Debug\Window.obj

@@ -3,6 +3,7 @@
 #include "Pipeline.h"
 #include "Device.h"
 #include "SwapChain.h"
+#include "Model.h"
 
 #include <memory>
 #include <vector>
@@ -23,6 +24,7 @@ namespace VE
 
 		void Run();
 	private:
+		void LoadModels();
 		void CreatePipelineLayout();
 		void CreatePipeline();
 		void CreateCommandBuffers();
@@ -35,12 +37,7 @@ namespace VE
 		std::unique_ptr<Pipeline> m_Pipeline;
 		VkPipelineLayout m_PipelineLayout;
 		std::vector<VkCommandBuffer> m_CommandBuffers;
-		/*{
-			m_Device, 
-			"../Shaders/SimpleShader.vert.spv", 
-			"../Shaders/SimpleShader.frag.spv", 
-			Pipeline::DefaultPipelineConfigInfo(WIDTH, HEIGHT) 
-		};*/
+		std::unique_ptr<Model> m_Model;
 	};
 }
 
