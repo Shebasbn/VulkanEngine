@@ -28,6 +28,7 @@ namespace VE
 		void CreatePipelineLayout();
 		void CreatePipeline();
 		void CreateCommandBuffers();
+		void FreeCommandBuffers();
 		void drawFrame();
 		void RecreateSwapChain();
 		void RecordCommandBuffer(int imageIndex);

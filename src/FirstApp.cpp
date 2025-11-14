@@ -1,9 +1,22 @@
 #include "FirstApp.h"
+
+// libs
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
+// std
 #include <print>
 #include <array>
 
 namespace VE
 {
+	struct SimplePushConstantData
+	{
+		glm::vec2 offset;
+		glm::vec3 color;
+	};
+
 	FirstApp::FirstApp()
 	{
 		LoadModels();
@@ -55,7 +68,11 @@ namespace VE
 	}
 	void FirstApp::CreatePipeline()
 	{
-		auto pipelineConfig = Pipeline::DefaultPipelineConfigInfo(m_SwapChain->width(), m_SwapChain->height());
+		assert(m_SwapChain != nullptr && "Cannot create pipeline before swap chain");
+		assert(m_PipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
+
+		PipelineConfigInfo pipelineConfig{};
+		Pipeline::DefaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.renderPass = m_SwapChain->getRenderPass();
 		pipelineConfig.pipelineLayout = m_PipelineLayout;
 		m_Pipeline = std::make_unique<Pipeline>(
@@ -79,6 +96,12 @@ namespace VE
 			std::println("Failed to create command buffers!");
 			return;
 		}
+	}
+
+	void FirstApp::FreeCommandBuffers()
+	{
+		vkFreeCommandBuffers(m_Device.device(), m_Device.getCommandPool(), static_cast<U32>(m_CommandBuffers.size()), m_CommandBuffers.data());
+		m_CommandBuffers.clear();
 	}
 
 	void FirstApp::drawFrame()
@@ -124,9 +147,20 @@ namespace VE
 
 		vkDeviceWaitIdle(m_Device.device());
 
-		m_SwapChain = nullptr;
+		if (m_SwapChain == nullptr)
+		{
+			m_SwapChain = std::make_unique<SwapChain>(m_Device, extent);
+		}
+		else
+		{
+			m_SwapChain = std::make_unique<SwapChain>(m_Device, extent, std::move(m_SwapChain));
+			if (m_SwapChain->imageCount() != m_CommandBuffers.size())
+			{
+				FreeCommandBuffers();
+				CreateCommandBuffers();
+			}
+		}
 
-		m_SwapChain = std::make_unique<SwapChain>(m_Device, extent);
 		CreatePipeline();
 	}
 
@@ -156,6 +190,17 @@ namespace VE
 		renderPassInfo.pClearValues = clearValues.data();
 
 		vkCmdBeginRenderPass(m_CommandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(m_SwapChain->getSwapChainExtent().width);
+		viewport.height = static_cast<float>(m_SwapChain->getSwapChainExtent().height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		VkRect2D scissor{ {0, 0}, m_SwapChain->getSwapChainExtent() };
+		vkCmdSetViewport(m_CommandBuffers[imageIndex], 0, 1, &viewport);
+		vkCmdSetScissor(m_CommandBuffers[imageIndex], 0, 1, &scissor);
 
 		m_Pipeline->bind(m_CommandBuffers[imageIndex]);
 		m_Model->Bind(m_CommandBuffers[imageIndex]);
